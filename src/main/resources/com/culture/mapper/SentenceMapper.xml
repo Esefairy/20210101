@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.culture.mapper.SentenceMapper">
+
+    <resultMap id="sentenceMap" type="Sentence">
+        <id property="id" column="id"></id>
+        <result property="content" column="content"></result>
+        <result property="createId" column="createId"></result>
+        <result property="createName" column="createName"></result>
+        <result property="createImg" column="createImg"></result>
+        <result property="createTime" column="createTime"></result>
+
+        <collection property="userList" ofType="User">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+            <result property="password" column="password"></result>
+            <result property="email" column="email"></result>
+            <result property="tel" column="tel"></result>
+            <result property="sex" column="sex"></result>
+            <result property="headImg" column="headImg"></result>
+            <result property="createTime" column="createTime"></result>
+            <result property="type" column="type"></result>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="sentenceMap">
+        select  sen.*,u.username
+        from cul_sentence sen
+                 left outer join cul_user u on sen.createId = u.id
+    </select>
+
+    <!--分页-->
+    <select id="queryTotal" parameterType="SentenceQuery" resultType="java.lang.Long">
+        select count(*)
+        from cul_sentence u
+    </select>
+
+    <select id="queryData" parameterType="SentenceQuery" resultType="Sentence">
+        select u.*
+        from cul_sentence u
+        order by u.id desc
+            limit #{offset}, #{pageSize}
+    </select>
+</mapper>

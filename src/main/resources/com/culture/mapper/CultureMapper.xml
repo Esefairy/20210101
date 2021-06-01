@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.culture.mapper.CultureMapper">
+
+	<!-- 新增-->
+	<insert id="addCulture" parameterType="Culture" useGeneratedKeys="true" keyProperty="id">
+		 insert into cul_culture(cultureName,address,info,`desc`,categoryId,creatorId,view,createTime)
+		 values(#{cultureName},#{address},#{info},#{desc},#{categoryId},#{creatorId},#{view},#{createTime})
+	</insert>
+
+	<!-- 更新头像-->
+	<update id="updateCultureFmUrl" parameterType="Culture">
+		update cul_culture set fmUrl=#{fmUrl} where id=#{id}
+	</update>
+
+	<sql id="whereSql">
+		<where>
+			<if test="cultureName != null and cultureName != ''">
+				and u.cultureName like concat('%',#{cultureName},'%')
+			</if>
+			<if test="categoryId != null and categoryId != '' and categoryId != -1">
+				and u.categoryId = #{categoryId}
+			</if>
+		</where>
+	</sql>
+
+	<!--分页-->
+	<select id="queryTotal" parameterType="CultureQuery" resultType="java.lang.Long">
+		select count(*)
+		from cul_culture u
+		<include refid="whereSql"></include>
+	</select>
+
+	<select id="queryData" parameterType="CultureQuery" resultMap="CultureMap">
+		select u.*,s.id sid,s.username,c.id cid,c.categoryName
+		from cul_culture u
+		join cul_user s on u.creatorId = s.id
+		join cul_category c on u.categoryId = c.id
+		<include refid="whereSql"></include>
+		order by u.id desc
+		limit #{offset},#{pageSize}
+	</select>
+	<resultMap id="CultureMap" type="Culture">
+		<id property="id" column="id"></id>
+		<result property="cultureName" column="cultureName"></result>
+		<result property="address" column="address"></result>
+		<result property="info" column="info"></result>
+		<result property="desc" column="desc"></result>
+		<result property="fmUrl" column="fmUrl"></result>
+		<result property="view" column="view"></result>
+		<result property="user.id" column="uid"></result>
+		<result property="user.username" column="username"></result>
+		<result property="category.id" column="cid"></result>
+		<result property="category.categoryName" column="categoryName"></result>
+
+	</resultMap>
+
+
+
+	<delete id="deleteCulture" parameterType="java.lang.Long" >
+		delete from cul_culture where id=#{id}
+	</delete>
+
+
+
+	<!-- 修改用户editSaveCulture-->
+	<update id="editSaveCulture" parameterType="Culture">
+		update cul_culture
+		set cultureName=#{cultureName},address=#{address},
+		     info=#{info},`desc`=#{desc},categoryId=#{categoryId}
+		where id =#{id}
+	</update>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, scalable=no" />
+    <title>后台管理系统</title>
+    <meta name="author" content="SoulCoder">
+    <div th:include="~{admin/common/include :: cssStyle }"></div>
+</head>
+<body>
+<div class="coder-layout-web">
+    <div class="coder-layout-container">
+        <!--左侧导航-->
+        <div th:include="~{admin/common/include :: #asideStyle }"></div>
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        <div th:include="~{admin/common/include :: #headerStyle }"></div>
+        <!--End 头部信息-->
+        <!--页面主要内容-->
+        <main class="coder-layout-content">
+
+            <div class="container-fluid">
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar clearfix">
+                                <!-- 查询搜索框start-->
+                                <div id="toolbar">
+
+
+                                    <div class="myBtn-content">
+                                        <button id="search" type="button" class="btn btn-primary" data-toggle="modal" data-method="add">
+                                            <i class="mdi mdi-content-save"></i>新增</button>
+                                    </div>
+                                </div>
+                                <!-- 查询搜索框end-->
+
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="announcementTable" ></table>
+                                </div>
+                            </div>
+                            <!-- 新增表单start-->
+                            <div class="modal fade" id="announcementAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #2c313b;">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" style="color:white;" >句子编辑:</h4>
+                                        </div>
+                                        <form  id="announcementAddForm" method="post"  enctype="multipart/form-data">
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label  class="control-label">句子名称：</label>
+                                                    <input type="text"  class="form-control" name="announcement">
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='save' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 新增表单end-->
+                            <!-- 修改表单start-->
+                            <div class="modal fade" id="announcementEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #2c313b;">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" style="color:white;" >句子编辑:</h4>
+                                        </div>
+                                        <form  id="announcementEditForm" method="post"  enctype="multipart/form-data">
+                                            <div class="modal-body">
+                                                <input type="hidden" id="e_id" class="form-control" name="id">
+                                                <div class="form-group">
+                                                    <label  class="control-label">句子名称：</label>
+                                                    <input type="text" id="e_announcement" class="form-control" name="announcement">
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='editSave' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 修改表单end-->
+
+
+                        </div>
+                        <!-- 报表end-->
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<div th:include="~{admin/common/include :: #jsStyle}"></div>
+<script type="text/javascript"  th:src="@{/static/admin/js/jquery.serialize-object.min.js}"></script>
+
+<!--图表插件-->
+<script type="text/javascript">
+
+    $(document).ready(function(e){
+        $('#announcementTable').bootstrapTable({
+            url: '/announcement/listpage',                      //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: 10,                     //每页的记录行数（*）
+            pageList: [5, 10, 20],        //可供选择的每页的行数（*）
+            iconsPrefix: 'mdi', // 自定义表格右上角的图标，这个必须要定义，因为不是官方模板，icon图标样式名字不同会导致图标无法显示
+            icons:  {
+                refresh: 'mdi-refresh',              // 刷新图标
+                columns: 'mdi-format-list-bulleted', // 列图标
+                toggleOff: 'mdi-toggle-switch-off',  // 切换光
+                toggleOn: 'mdi-toggle-switch',       // 切换开
+                detailOpen: 'mdi-plus',              // 详情开
+                detailClose: 'mdi-minus',            // 详情光
+                fullscreen: 'mdi-fullscreen'         // 全屏图标
+            },
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            singleSelect: false, //开启单选,想要获取被选中的行数据必须要有该参数
+            queryParams : function(params) {//上传服务器的参数
+                var temp = {
+                    offset :params.offset + 0,// SQL语句起始索引
+                    page : params.limit  // 每页显示数量
+
+                };
+                return temp;
+            },
+            columns: [
+                {
+                    align : 'center',
+                    checkbox: true
+                },{
+                    field: 'id',
+                    title: '公告编号',
+                    width: 120
+                }, {
+                    field: 'announcement',
+                    title: '公告',
+                },
+                {
+                    field: 'doOpt',
+                    title: '操作',
+                    formatter : optFormatter
+                }]
+        });
+
+
+        function optFormatter(value,row, index){
+            var c = '<a class="btn btn-xs btn-default" href="#!"  onclick=\'edit("' + row.id + '")\' title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>';
+            var e = '<div class="btn btn-xs btn-default"  href="#!" onclick="del(\''+row.id+'\')" title="删除"  data-toggle="tooltip"><i class="mdi mdi-window-close"></i><div/> ';
+            return c + e ;
+        }
+
+
+
+
+    })
+
+    function edit(id){
+        $('#announcementEditModal').modal({
+            show: true,
+            backdrop:'static'
+        });
+        //重置表单
+
+        var editRow = $('#announcementTable').bootstrapTable('getRowByUniqueId',id);//行的数据
+        $("#e_id").val(editRow.id);
+        $("#e_announcement").val(editRow.announcement);
+
+
+    }
+
+    function del(id){
+        //发送ajax请求删除数据
+        $.get("/announcement/deleteAnnouncement",{"id":id},function(res){
+            if(res.isSuccess){
+                $.confirm({
+                    title: '温馨提示',
+                    content: '删除成功',
+                    type: 'green',
+                    buttons: {
+                        omg: {
+                            text: '谢谢',
+                            btnClass: 'btn-green',
+                        }
+                    }
+                });
+                $("#announcementTable").bootstrapTable('refresh')
+            }
+        });
+    }
+
+
+    $(document).ready(function(e) {
+
+        $("button,a").on('click',function(){
+            //获取到 a标签里面配置 data-method
+            var methodName = $(this).data('method');
+            if(methodName){
+                doMethod[methodName]();
+            }
+        });
+        var doMethod = {
+            add:function(){
+
+                $('#announcementAddModal').modal({
+                    show: true,
+                    backdrop:'static'
+                });
+
+            },
+            search:function(){
+
+                var announcement = $("#q_content").val();
+                var queryparam = {
+                    silent:true,
+                    query:{
+                        announcement:announcement
+                    }
+                };
+                $('#announcementTable').bootstrapTable('refresh',queryparam);
+
+            },
+            save:function(){
+
+                //提交表单
+                var formParamObj =  $("#announcementAddForm").serializeObject();
+                //验证通过
+                $.ajax({
+                    url: "/announcement/addAnnouncement",
+                    type: "POST",
+                    data: formParamObj,
+                    success: function (data) {
+
+                        if (data.isSuccess) {
+                            $('#announcementAddModal').modal('hide');
+                            $('#announcementTable').bootstrapTable('refresh');
+                        } else if ("403" == data) {
+                            alert("你无权访问");
+                            $('#announcementAddModal').modal('hide');
+                        }
+
+                    }
+                });
+
+
+            },
+            editSave:function(){
+                //提交表单
+
+                var formParamObj =  $("#announcementEditForm").serializeObject();
+
+                //验证通过
+                $.ajax({
+                    url: "/announcement/editAnnouncement",
+                    async: false,
+                    type: "POST",
+                    data: formParamObj,
+                    success: function (data) {
+
+                        if (data.isSuccess) {
+                            $.confirm({
+                                title: '温馨提示',
+                                content: '修改成功',
+                                type: 'green',
+                                buttons: {
+                                    omg: {
+                                        text: '谢谢',
+                                        btnClass: 'btn-green',
+                                    }
+                                }
+                            });
+                            $('#announcementEditModal').modal('hide');
+                            $('#announcementTable').bootstrapTable('refresh');
+                        } else if ("403" == data) {
+                            alert("你无权访问");
+                            $('#announcementEditModal').modal('hide');
+                        }
+
+                    }
+                });
+            }
+
+        }
+
+
+    })
+
+
+</script>
+
+
+
+<style>
+    .my-container {
+        float: left;
+        display: inline-block;
+        margin-right:30px;
+    }
+
+    .myLabel-content ,.myText-content,.myBtn-content{
+        float: left;
+        display: inline-block;
+        line-height: 40px;
+        margin-left: 10px;
+    }
+    .myLabel-content,.myText-content input[type='text'],.myBtn-content .btn {
+        height: 38px;
+        font-size: 15px;
+    }
+    .myBtn-content .btn {
+        margin-bottom: 10px;
+        margin-right: 20px;
+    }
+</style>
+
+
+
+</body>
+</html>

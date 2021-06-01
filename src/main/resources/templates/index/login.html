@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title>Login</title>
+
+	<link rel='stylesheet' th:href='@{/index/css/frontend.min.css}' type='text/css'>
+	<link rel="stylesheet" th:href="@{/index/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/static/admin/js/jconfirm/jquery-confirm.min.css}">
+
+	<script th:src="@{/index/lib/jquery-3.4.1/jquery-3.4.1.min.js}"></script>
+
+	<script th:src="@{/static/admin/js/jconfirm/jquery-confirm.min.js}"></script>
+	<style type="text/css">
+		body::-webkit-scrollbar {
+			display: none;
+		}
+		#content-4262 .semplice-cover .show-more svg,
+		#content-4262 .semplice-cover .show-more img {
+			width: 2.9444rem;
+		}
+
+		.cover-transparent {
+			background: rgba(0, 0, 0, 0) !important;
+		}
+
+		#content-4262 .sections {
+			margin-top: 0px !important;
+		}
+
+		#content-4262 #cover-4262 .cover-image {
+			background-image: url(/index/images/cc_bg.jpg);
+			background-size: cover;
+			background-position: top left;
+			background-attachment: scroll;
+		}
+
+		* {
+			padding: 0;
+			margin: 0;
+			font-family: 'Open Sans Light';
+			letter-spacing: .05em;
+		}
+
+		.login-wrapper-l {
+			background-color: #fff;
+			width: 350px;
+			height: 500px;
+			border-radius: 15px;
+
+			margin-top: 400px;
+			position: relative;
+			left: 50%;
+
+			transform: translate(-50%, -50%);
+			opacity: 0.5;
+		}
+
+		.login-wrapper-l .header {
+			font-size: 30px;
+			font-weight: bold;
+			text-align: center;
+			line-height: 200px;
+		}
+
+		.login-wrapper-l .form-warpper-l .input-item {
+			margin: 0 auto;
+			display: block;
+			width: 80%;
+			margin-bottom: 20px;
+			border: 0;
+			padding: 10px;
+			border-bottom: 1px solid rgb(128, 125, 125);
+			font-size: 15px;
+			outline: none;
+		}
+
+		.login-wrapper-l .form-warpper-l .input-item::placeholder {
+			/* text-transform: uppercase; */
+			text-transform: lowercase;
+		}
+
+		.login-wrapper-l .form-warpper-l .btn {
+			text-align: center;
+			padding: 10px;
+			width: 80%;
+			margin: 20px 0 0 37px;
+			background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+			color: #fff;
+			font-size: 13px;
+		}
+
+		.login-wrapper-l .msg {
+			font-size: 13px;
+			text-align: center;
+			line-height: 80px;
+			margin-top: -5px;
+		}
+
+		.login-wrapper-l .msg span {
+
+			color: #a6c1ee;
+		}
+
+		.form-warpper-l p {
+			font-size: 11px;
+		}
+
+		#remember-me {
+			
+			margin-left: 35px;
+		}
+		.form-warpper-l p{
+			margin: -21px 0 0 55px;
+		}
+		body{
+			height: 300px;
+		}
+	</style>
+
+
+</head>
+
+<body class="page-template-default page page-id-4262 is-frontend static-mode static-transitions mejs-semplice-ui"
+	data-post-type="page" data-post-id="4262">
+	<div id="content-holder" data-active-post="4262">
+		<div id="content-4262" class="content-container active-content  hide-on-init">
+			<div class="transition-wrap">
+				<div class="sections">
+
+					<section id="cover-4262" class="semplice-cover" data-height="fullscreen"
+						data-column-mode-sm="single" data-column-mode-xs="single" data-valign="center"
+						data-cover="visible" data-cover-effect="zoom">
+						<div class="semplice-cover-inner" data-effect-settings='[]'>
+
+							<div class="cover-image-wrapper fp-bg" data-src="static/image/cc_bg.jpg" data-width="2560"
+								data-height="1600" data-size="cover">
+								<div class="cover-image"></div>
+							</div>
+
+						</div>
+					</section>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="login-wrapper-l">
+		<div class="header">Login</div>
+		<div class="form-warpper-l">
+			<input type="text" name="username" placeholder="username" class="input-item" id="username">
+			<input type="password" name="password" placeholder="password" class="input-item" id="password">
+			<input type="checkbox" name="remember-me" id="remember-me">
+			<p>Remember me</p>
+			<div class="btn" th:onclick="loginAccount()">Login</div>
+
+		</div>
+		<div class="msg">
+			Don't  have  account ? <span th:onclick="signup()">  Sign up</span>
+		</div>
+	</div>
+
+
+	<script>
+		function signup() {
+			window.location.href = '/signup';
+		}
+
+
+		function loginAccount() {
+			//获取表单信息
+			var customerObj = {
+				username: $("#username").val(),
+				password: $("#password").val()
+			}
+			//发送ajax请求提交表单
+			$.ajax({
+				url: "/index/login",
+				data: JSON.stringify(customerObj),
+				method: 'post',
+				contentType: 'application/json',
+				dataType: "json",
+				success: function (result) {
+					console.log(result)
+					if (result.isSuccess) {
+						$.confirm({
+							title: '温馨提示',
+							content: '登录成功',
+							type: 'green',
+							buttons: {
+								omg: {
+									text: '谢谢',
+									btnClass: 'btn-green',
+									action: function () {
+										location.href = '/'
+									}
+								}
+							}
+						});
+
+					} else {
+						$.confirm({
+							title: '温馨提示',
+							content: result.message,
+							type: 'red',
+							typeAnimated: true,
+							buttons: {
+								close: {
+									text: '关闭'
+								}
+							}
+						});
+					}
+				}
+			})
+
+		}
+	</script>
+
+	<script type='text/javascript' th:src='@{/index/js/shared.scripts.min.js}' id='semplice-shared-scripts-js'></script>
+	<script type='text/javascript' th:src='@{/index/js/frontend.scripts.min.js}' id='semplice-frontend-scripts-js'></script>
+	<script type='text/javascript' id='semplice-frontend-js-js-extra'>
+		/* <![CDATA[ */
+		var semplice = {
+			"default_api_url": "https:\/\/vanschneider.com\/wp-json",
+			"semplice_api_url": "https:\/\/vanschneider.com\/wp-json\/semplice\/v1\/frontend",
+			"template_dir": "https:\/\/vanschneider.com\/wp-content\/themes\/semplice5",
+			"category_base": "\/category\/",
+			"tag_base": "\/tag\/",
+			"nonce": "e113267a4f",
+			"frontend_mode": "static",
+			"static_transitions": "enabled",
+			"site_name": "House of van Schneider",
+			"base_url": "https:\/\/vanschneider.com",
+			"frontpage_id": "6154",
+			"blog_home": "https:\/\/vanschneider.com",
+			"blog_navbar": "",
+			"sr_status": "enabled",
+			"blog_sr_status": "enabled",
+			"is_preview": "",
+			"password_form": "\r\n<div class=\"post-password-form\">\r\n\t<div class=\"inner\">\r\n\t\t<form action=\"https:\/\/vanschneider.com\/wp-login.php?action=postpass\" method=\"post\">\r\n\t\t\t<div class=\"password-lock\"><svg xmlns=\"http:\/\/www.w3.org\/2000\/svg\" width=\"35\" height=\"52\" viewBox=\"0 0 35 52\">\r\n  <path id=\"Form_1\" data-name=\"Form 1\" d=\"M31.3,25.028H27.056a0.755,0.755,0,0,1-.752-0.757V14.654a8.8,8.8,0,1,0-17.608,0v9.616a0.755,0.755,0,0,1-.752.757H3.7a0.755,0.755,0,0,1-.752-0.757V14.654a14.556,14.556,0,1,1,29.111,0v9.616A0.755,0.755,0,0,1,31.3,25.028Zm-3.495-1.514h2.743V14.654a13.051,13.051,0,1,0-26.1,0v8.859H7.192V14.654a10.309,10.309,0,1,1,20.617,0v8.859Zm4.43,28.475H2.761A2.77,2.77,0,0,1,0,49.213V25.28a1.763,1.763,0,0,1,1.755-1.766H33.242A1.763,1.763,0,0,1,35,25.28V49.213A2.77,2.77,0,0,1,32.239,51.988ZM1.758,25.028a0.252,0.252,0,0,0-.251.252V49.213a1.259,1.259,0,0,0,1.254,1.262H32.239a1.259,1.259,0,0,0,1.254-1.262V25.28a0.252,0.252,0,0,0-.251-0.252H1.758ZM20.849,43h-6.7a0.75,0.75,0,0,1-.61-0.314,0.763,0.763,0,0,1-.1-0.682l1.471-4.44a4.1,4.1,0,1,1,5.184,0L21.563,42a0.763,0.763,0,0,1-.1.682A0.75,0.75,0,0,1,20.849,43ZM15.2,41.487H19.8l-1.319-3.979a0.76,0.76,0,0,1,.33-0.891,2.6,2.6,0,1,0-2.633,0,0.76,0.76,0,0,1,.33.891Z\"\/>\r\n<\/svg>\r\n<\/div>\r\n\t\t\t<p>This content is protected. <br \/><span>To view, please enter the password.<\/span><\/p>\r\n\t\t\t<div class=\"input-fields\">\r\n\t\t\t\t<input name=\"post_password\" class=\"post-password-input\" type=\"password\" size=\"20\" maxlength=\"20\" placeholder=\"Enter password\" \/><input type=\"submit\" name=\"Submit\" value=\"Submit\" \/>\t\t\t<\/div>\r\n\t\t<\/form>\r\n\t<\/div>\r\n<\/div>\r\n\r\n",
+			"portfolio_order": [7263, 7285, 7283, 7281, 7279, 7275, 7277, 7273, 7271, 7268, 7265, 5471, 5442],
+			"gallery": {
+				"prev": "<svg version=\"1.1\" id=\"Ebene_1\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\"\n\twidth=\"18px\" height=\"40px\"  viewBox=\"0 0 18 40\" enable-background=\"new 0 0 18 40\" xml:space=\"preserve\">\n<g id=\"Ebene_2\">\n\t<g>\n\t\t<polygon points=\"16.3,40 0.3,20 16.3,0 17.7,1 2.5,20 17.7,39 \t\t\"\/>\n\t<\/g>\n<\/g>\n<\/svg>\n",
+				"next": "<svg version=\"1.1\" id=\"Ebene_1\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\"\n\twidth=\"18px\" height=\"40px\" viewBox=\"0 0 18 40\" enable-background=\"new 0 0 18 40\" xml:space=\"preserve\">\n<g id=\"Ebene_2\">\n\t<g>\n\t\t<polygon points=\"0.3,39 15.5,20 0.3,1 1.7,0 17.7,20 1.7,40 \t\t\"\/>\n\t<\/g>\n<\/g>\n<\/svg>\n"
+			}
+		};
+		/* ]]> */
+	</script>
+	<script type='text/javascript' th:src='@{/index/js/frontend.min.js}' id='semplice-frontend-js-js'></script>
+
+</body>
+
+</html>

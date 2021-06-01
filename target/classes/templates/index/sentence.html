@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>
+        纸篓 / 与过往和解
+    </title>
+    <link href="/index/css/zhilou.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+
+
+<link href="/index/css/font-awesome.css" rel="stylesheet" type="text/css">
+<script src="/index/js/jquery-3.4.1.js" type="text/javascript"></script>
+
+<!-- 顶部 -->
+<div th:replace="~{index/common/common :: loader}"></div>
+
+<div th:replace="~{index/common/common :: topbar}"></div>
+
+
+<div id="Main" class="content maincontain box">
+    <div class="showZhiPian" show="0">
+        <div class="userInfo box">
+        </div>
+        <div class="zhipian box">
+        </div>
+        <i class="close" title="关闭">×</i>
+        <div class="action_item box">
+            <a href="javascript:void(0)" class="xihuan"><i class="fa fa-heart"></i>&nbsp;喜欢</a>&nbsp;&nbsp;
+
+        </div>
+    </div>
+    <div class="PageTitle" style="position: relative;">
+        <div class="zhilou_title box">
+            <span class="en">纸篓</span> <span class="cn">&nbsp;&nbsp;/&nbsp;与过往和解</span>
+        </div>
+
+    </div>
+
+    <div class="contentTwo box" total='71'>
+
+        <div class="item box" zid='433' ed="0" th:each="sentence : ${sentences}">
+            <div class="userInfo box">
+                <img th:src="@{'/showimage/'+${sentence.createImg}}">
+                <div class="user_R box">
+                    <div class="zhipian_name" th:text="${sentence.createName}">
+
+                    </div>
+                    <div class="zhipian_time">
+                        [[ ${#dates.format(sentence.createTime, 'yyyy-M-d')} ]]
+                    </div>
+                </div>
+            </div>
+            <div class="zhipian box" th:content="${sentence.content}">
+                [[ ${sentence.content} ]]
+            </div>
+            <i class="look fa fa-search" title="查看详情"></i>
+        </div>
+
+
+
+
+    </div>
+
+    <div class="moreDiv">
+        <a class="more" href="javascript:void(0)">NEXT</a>
+    </div>
+
+</div>
+    <script src="/index/js/zhilou.js" type="text/javascript"></script>
+
+    <div th:replace="~{index/common/common :: footer}"></div>
+
+
+    <!-- 返回顶部插件 -->
+    <div th:replace="~{index/common/common :: cd_top}"></div>
+</body>
+
+</html>

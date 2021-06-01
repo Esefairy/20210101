@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="no-js" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>文化旅游</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="stylesheet" th:href="@{/index/css/culture/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/index/css/culture/bootstrap-select.min.css}">
+    <link rel="stylesheet" th:href="@{/index/css/culture/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/index/css/culture/style.css}">
+
+    <script th:src="@{/index/js/jquery-1.11.1.min.js}"></script>
+
+    <script th:src="@{/index/js/culture/bootstrap.min.js}"></script>
+    <script th:src="@{/index/js/culture/bootstrap-select.min.js}"></script>
+
+    <script th:src="@{/index/js/culture/main.js}"></script>
+
+    <script th:src="@{/index/js/culture/bootstrap-paginator.js}"></script>
+    <style>
+        .search-btn {
+            color: #FFFFFF;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部 -->
+<div th:replace="~{index/common/common :: loader}"></div>
+<!-- 导航栏 -->
+<div th:include="~{index/common/common :: topbar}"></div>
+
+<div class="slider-area" style="height: 250px">
+    <div class="container slider-content">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12">
+                <form action="" class="form-inline">
+                    <div class="form-group">
+                        <input type="text" id="q_cultureName" class="form-control" placeholder="Please enter">
+                    </div>
+                    <div class="form-group">
+                        <select id="q_categoryId" name="categoryid" class="selectpicker" data-live-search="false"
+                                data-live-search-style="begins" title="ALL">
+                            <option th:value="-1">ALL</option>
+                            <option th:each="category : ${categorys}" th:value="${category.id}"
+                                    th:text="${category.categoryName}"></option>
+
+                        </select>
+                    </div>
+                    <i class="fa fa-search" style="color: pink; margin-left: 20px" th:onclick="searchCulture()"></i>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- property area -->
+<div class="content-area recent-property" style="padding-bottom: 60px; background-color: rgb(252, 252, 252);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12  padding-top-40 properties-page">
+
+                <div class="col-md-12 ">
+                    <div id="cultureContent" class="proerty-th">
+
+
+                    </div>
+                </div>
+                <!-- 分页start-->
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <div class="pagination">
+                            <ul id="pageLimit">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- 分页end-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer end-->
+<div th:replace="~{index/common/common :: footer}"></div>
+
+
+<script>
+
+    function searchCulture() {
+
+        let cultureName = $("#q_cultureName").val();
+        let categoryId = $("#q_categoryId").val()
+
+        render(cultureName, categoryId)
+    }
+
+    //分页
+    var currentPage = 1;
+    var pageSize = 12;
+
+    function render(cultureName, categoryId) {
+
+        $.ajax({
+            url: "/cultureIndex/listpage",
+            data: {
+                page: currentPage,
+                pageSize: pageSize,
+                cultureName: cultureName,
+                categoryId: categoryId
+            },
+            dataType: "json",
+            success: function (result) {
+                console.log(result);
+                // 将数据渲染到页面
+
+                var categoryHtml = "";
+                for (var i = 0; i < result.rows.length; i++) {
+                    var cultures = result.rows[i];
+
+                    categoryHtml += "<div class=\"col-sm-6 col-md-3 p0\">";
+                    categoryHtml += "<div class=\"box-two proerty-item\">";
+                    categoryHtml += "<div class=\"item-thumb\">";
+                    categoryHtml += "<a href=\"/culture/detail?id=" + cultures.id + "\" ><img src=\"/showFmImg/" + cultures.fmUrl + "\"></a>";
+                    categoryHtml += "</div>";
+
+                    categoryHtml += "<div class=\"item-entry overflow\">";
+                    categoryHtml += "<h5><a href=\"property-1.html\">" + cultures.cultureName + " </a></h5>";
+                    categoryHtml += "<div class=\"dot-hr\"></div>";
+                    categoryHtml += "<span class=\"pull-left\"><b> 地址 :</b> " + cultures.address + " </span>";
+                    categoryHtml += "<span class=\" pull-right\"><b> 浏览 :</b> " + cultures.view + "</span>";
+                    // categoryHtml += "<p style=\"display: none;\">" + cultures.info + "</p>";
+                    categoryHtml += "<div class=\"property-icon\">";
+
+                    categoryHtml += "</div></div></div></div>";
+
+
+                }
+                $("#cultureContent").html(categoryHtml)
+                // 调用分页函数.参数:当前所在页, 总页数(用总条数 除以 每页显示多少条,在向上取整), ajax函数
+                setPage(currentPage, Math.ceil(result.total / pageSize), render)
+            }
+        })
+    }
+
+    render()
+
+    /**
+     *
+     * @param pageCurrent 当前所在页
+     * @param pageSum 总页数
+     * @param callback 调用ajax
+     */
+    function setPage(pageCurrent, pageSum, callback) {
+        $("#pageLimit").bootstrapPaginator({
+            //设置版本号
+            bootstrapMajorVersion: 3,
+            // 显示第几页
+            currentPage: pageCurrent,
+            // 总页数
+            totalPages: pageSum,
+            //当单击操作按钮的时候, 执行该函数, 调用ajax渲染页面
+            onPageClicked: function (event, originalEvent, type, page) {
+                // 把当前点击的页码赋值给currentPage, 调用ajax,渲染页面
+                currentPage = page
+                callback && callback()
+            }
+        })
+    }
+
+</script>
+<!-- 返回顶部插件 -->
+<!--<div th:replace="~{index/common/common :: cd_top}"></div>-->
+</body>
+</html>

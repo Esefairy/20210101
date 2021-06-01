@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.culture.mapper.CategoryMapper">
+
+    <!--所有菜单-->
+    <select id="queryAll" resultType="Category">
+        select *
+        from cul_category
+    </select>
+
+    <!--分页-->
+    <select id="queryTotal" parameterType="CategoryQuery" resultType="java.lang.Long">
+        select count(*)
+        from cul_category u
+    </select>
+
+    <select id="queryData" parameterType="CategoryQuery" resultType="Category">
+        select u.*
+        from cul_category u
+        order by u.id desc
+            limit #{offset}, #{pageSize}
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

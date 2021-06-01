@@ -1,0 +1,146 @@
+<!--
+代码如诗 , 如痴如醉 !
+-->
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<!-- 顶部 -->
+
+<div th:fragment="loader">
+    <div id="loader"></div>
+    <script th:src="@{/index/js/diaspora.js}"></script>
+    <link rel="stylesheet" th:href="@{/index/css/loader.css}">
+
+
+</div>
+<!--导航栏-->
+<div th:fragment="topbar">
+
+    <link rel="stylesheet" th:href="@{/index/css/common.css}">
+    <link rel="stylesheet" th:href="@{index/css/font-awesome.css}">
+<!--    <script src="/index/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>-->
+
+    <div class="topbar">
+        <div class="headMenu">
+            <a class="site_one_logo posttitle" href="/">
+            </a>
+            <a class="site_one_logo_scroll posttitle" href="/">
+            </a>
+            <ul class="topmenu">
+                <!--相思寄-->
+                <li><a href="/culture" class="hidden-xs posttitle">倾一世</a></li>
+                <li><a href="/sentence" class="hidden-xs posttitle">琴弦上</a></li>
+                <li><a href="/about" class="hidden-xs posttitle">关于我</a></li>
+                <li th:if="${session.loginUserName == null}">
+                    <a href="/login" class="hidden-xs posttitle">登录</a>
+                </li>
+                <li class="posttitle" th:if="${session.loginUserName != null}">
+
+                    <a href="/center" class="posttitle">[[ ${session.loginUserName} ]]
+
+                    </a><a class="logout_ico posttitle" style="padding-left: 30px;padding-top: -5px;text-decoration: none" href="/logout"></a>
+
+<!--                    <script>-->
+<!--                        function logout(){-->
+<!--                            location.href="/logout"-->
+<!--                        }-->
+<!--                    </script>-->
+<!--                    <i class="logout_ico posttitle" style="padding-left: 25px;" onclick="logout()"></i>-->
+<!--                    <span class="jiantou">-->
+<!--                        <i class="layer1"></i>-->
+<!--                        <i class="layer2"></i>-->
+<!--                    </span>-->
+<!--                    <a href="javascript:void(0)">[[ ${session.loginUserName} ]]-->
+<!--                        <i class="fa fa-angle-down" style="padding-left: 5px;"></i>-->
+<!--                    </a>-->
+<!--                    <ul class="menu_list">-->
+<!--                        <li><a href="" target="_blank" class="posttitle">信息</a></li>-->
+<!--                        <li><a href="/logout" target="_blank" class="posttitle">退出</a></li>-->
+<!--                    </ul>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 向上滑显示banner -->
+    <script>
+        $(function () {
+            //menu
+            var scrollTopVal_head_ = 0;
+            $(window).scroll(function () {
+                if ($(window).scrollTop() > 0) {
+                    if (!$(".topbar").hasClass("topbarFixed")) {
+                        $(".topbar").addClass("topbarFixed").hide();
+                    }
+                } else {
+                    $(".topbar").removeClass("topbarFixed");
+                }
+                if ($(window).scrollTop() <= scrollTopVal_head_) {
+                    //向上滑
+                    $(".topbarFixed").show();
+                } else {
+                    $(".topbarFixed").hide();
+                }
+                scrollTopVal_head_ = $(window).scrollTop();
+            });
+        });
+    </script>
+</div>
+
+
+<!-- footer -->
+<footer id="footer" th:fragment="footer">
+
+    <div class="footer_con">
+
+        <p>Copyright&nbsp;&copy;&nbsp;2021&nbsp;•&nbsp;Theme&nbsp;by&nbsp;:
+            <a class="posttitle" href="http://errr.me" target="_self">Pangkun</a>&nbsp;•&nbsp;Run&nbsp;Time&nbsp;:
+            <a class="posttitle" href="/toLogin" target="_self"><span id="span_dt_dt"></span></a><span class="my-face">(●'◡'●)ﾉ♥</span>
+        </p>
+        <ul>
+            <li>
+                <a href="https://github.com/errme" target="_blank">
+                    <img th:src="@{/index/images/github.png}" alt="">
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- run time -->
+    <script>
+        function show_date_time() {
+            window.setTimeout("show_date_time()", 1000);
+            var h = new Date("3/14/2021 05:20:00"),
+                j = new Date,
+                d = j.getTime() - h.getTime(),
+                i = 86400000,
+                b = d / i,
+                g = Math.floor(b),
+                c = 24 * (b - g),
+                a = Math.floor(c),
+                f = 60 * (c - a),
+                l = Math.floor(60 * (c - a)),
+                k = Math.floor(60 * (f - l));
+
+            // span_dt_dt.innerHTML = g + "&nbsp;d&nbsp;" + a + "&nbsp;hr&nbsp;" + l + "&nbsp;m&nbsp;" + k + "&nbsp;sec"
+            span_dt_dt.innerHTML = g + "&nbsp;day"
+
+        }
+
+        show_date_time();
+    </script>
+
+</footer>
+<!-- 返回顶部插件 -->
+<div th:fragment="cd_top">
+
+    <link rel="stylesheet" th:href="@{index/css/cd-top.css}">
+
+    <a href="#0" class="cd-top">Top</a>
+
+    <script th:src="@{/index/js/jquery.cdtop.min.js}"></script>
+
+    <script th:src="@{/index/js/main.js}"></script>
+</div>
+
+</html>

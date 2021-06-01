@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="cssStyle">
+    <link rel="stylesheet" th:href="@{/static/admin/css/bootstrap.min.css}">
+    <!-- 上传控件-->
+    <link rel="stylesheet" media="all" type="text/css" th:href="@{/static/admin/js/plugins/fileinput/css/fileinput.css}"/>
+    <link rel="stylesheet" th:href="@{/static/admin/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/static/admin/css/style.min.css}">
+    <!-- 引入表单验证器--><!-- <div class=”form-group”></div>  <input class="form-control" />-->
+    <link rel="stylesheet" th:href="@{/static/admin/js/plugins/validator/css/bootstrapValidator.css}"/>
+
+    <!--对话框-->
+    <link rel="stylesheet" th:href="@{/static/admin/js/jconfirm/jquery-confirm.min.css}">
+    <!-- bootstrap表格-->
+    <link rel="stylesheet" th:href="@{/static/admin/js/bootstrap-table/bootstrap-table.min.css}">
+</div>
+<div id="jsStyle">
+    <script type="text/javascript" th:src="@{/static/admin/js/jquery.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/static/admin/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/perfect-scrollbar.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/main.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/plugins/validator/js/bootstrapValidator.js}"></script>
+    <!-- 上传控件-->
+    <script type="text/javascript" th:src="@{/static/admin/js/plugins/fileinput/js/fileinput.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/plugins/fileinput/js/locales/zh.js}"></script>
+    <!--对话框-->
+    <script type="text/javascript" th:src="@{/static/admin/js/jconfirm/jquery-confirm.min.js}"></script>
+    <!-- bootstrap表格-->
+    <script type="text/javascript" th:src="@{/static/admin/js/bootstrap-table/bootstrap-table.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/bootstrap-table/bootstrap-table-zh-CN.js}"></script>
+    <!-- 引入chart.js报表-->
+    <script type="text/javascript" th:src="@{/static/admin/js/perfect-scrollbar.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/admin/js/Chart.js}"></script>
+    <!-- 引入公共的js内容 选择页面激活状态-->
+    <script type="text/javascript" th:src="@{/static/admin/js/soulcoder.js}"></script>
+
+</div>
+<!-- 左侧导航-->
+<div id="asideStyle">
+    <aside class="coder-layout-sidebar">
+        <!-- logo -->
+        <div class="sidebar-header" style="
+                    filter:alpha(opacity=90);
+                    opacity:0.9;
+                    font-family: bold;
+                    background-color:  rgba(33, 56, 65, 0.82);">
+                    <span>
+                        等风也等你
+                    </span>
+        </div>
+        <div class="coder-layout-sidebar-scroll">
+
+            <nav class="sidebar-main">
+                <ul class="nav nav-drawer">
+                    <li class="nav-item active"><a href="/admin"><i class="mdi mdi-home">
+                    </i> 后台首页</a>
+                    </li>
+
+                    <li class="nav-item nav-item-has-subnav" th:each="pmenu : ${session.menuList}">
+                        <!-- JQUery插件 ztree-->
+                        <a href="javascript:expandNode()">
+                            <i th:class="${pmenu.icon}"></i>
+                            <span th:text="${pmenu.name}"></span>
+                        </a>
+                        <ul class="nav nav-subnav" th:each="cmenu : ${pmenu.menus}">
+                            <li>
+                                <a th:id="@{'id_'+${cmenu.id}}" href="javascript:void(0)"
+                                   th:onclick="goPage([[${cmenu.id}]],[[${cmenu.url}]]);">
+                                    <i th:class="${cmenu.icon}"> </i>
+                                    <span th:text="${cmenu.name}"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+    </aside>
+</div>
+
+<!-- 头部信息-->
+<div id="headerStyle">
+    <header class="coder-layout-header" style="background-image: url('../../../static/admin/images/bg.jpg')">
+
+        <nav class="navbar navbar-default">
+            <div class="topbar">
+
+                <div class="topbar-left">
+                    <div class="coder-aside-toggler">
+                        <span class="coder-toggler-bar"></span>
+                        <span class="coder-toggler-bar"></span>
+                        <span class="coder-toggler-bar"></span>
+                    </div>
+
+                </div>
+
+                <ul class="topbar-right">
+                    <li class="dropdown dropdown-profile">
+                        <a href="javascript:void(0)" data-toggle="dropdown">
+
+                            <img class="img-avatar img-avatar-48 m-r-10"
+                                 th:src="@{'/showimage/'+${#authentication.principal.loginUser.headImg}}"
+                                 alt="用户头像"/>
+
+                            <!-- 用户名-->
+                            <span><span sec:authentication="name"></span> <span class="caret"></span></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="/user/info"><i class="mdi mdi-account"></i> 个人信息</a></li>
+                            <li class="divider"></li>
+                            <li><a th:href="@{/logout}"><i class="mdi mdi-logout-variant"></i> 退出登录</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+
+            </div>
+        </nav>
+
+    </header>
+</div>
+
+</body>
+<style>
+
+
+</style>
+</html>

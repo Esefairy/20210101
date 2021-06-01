@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, scalable=no"/>
+    <title>后台管理系统</title>
+    <meta name="description" content="后台管理系统">
+    <meta name="author" content="SoulCoder">
+    <div th:include="~{admin/common/include :: cssStyle }"></div>
+</head>
+<body>
+<div class="coder-layout-web">
+    <div class="coder-layout-container">
+        <!--左侧导航-->
+        <div th:include="~{admin/common/include :: #asideStyle }"></div>
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        <div th:include="~{admin/common/include :: #headerStyle }"></div>
+        <!--End 头部信息-->
+        <!--页面主要内容-->
+        <main class="coder-layout-content">
+
+            <div class="container-fluid"
+                 style="background-color:transparent;
+                         padding-top: 0px;
+                         padding-bottom: 0px;">
+                <div class="row">
+                    <div class="col-lg-24">
+                        <div class="card">
+                            <!-- 新增表单start-->
+                            <div class="modal-dialog"
+                                 style="float:left;
+                                     margin-top:0px;
+                                     width: 100%;
+                                     background-color: black;
+                                        color:#ff8f2b;" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">
+                                            <span style="font-size: 18px;color:#ff8f2b;font-weight: bold">您的位置:</span>
+                                            <span style="font-size: 16px">文化管理/添加文化</span>
+                                        </h4>
+                                    </div>
+                                    <form id="cultureAddForm" method="post" enctype="multipart/form-data"
+                                          style="font-size: 16px;">
+                                        <div class="modal-body">
+
+                                            <div class="form-group">
+                                                <label for="recipient-cultureName" class="control-label">文化名称：</label>
+                                                <input type="text" class="form-control" name="cultureName"
+                                                       id="recipient-cultureName">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-address" class="control-label">地址：</label>
+                                                <input type="text" class="form-control" name="address"
+                                                       id="recipient-address">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="control-label">文化类型：</label>
+                                                <select class="form-control" id="categoryId" name="categoryId" size="1">
+                                                    <option th:each="category : ${categorys}" th:value="${category.id}">
+                                                        <span th:text="${category.categoryName}"></span>
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="recipient-desc" class="control-label">文化描述：</label>
+                                                <textarea class="form-control" name="desc" id="recipient-desc"></textarea>
+                                             </div>
+                                            <div class="form-group">
+                                                <label for="recipient-info" class="control-label">文化介绍：</label>
+                                                <textarea class="form-control" name="info" id="recipient-info"></textarea>
+                                            </div>
+
+
+                                            <!-- 头像上传-->
+                                            <div class="form-group">
+                                                <div class="col-sm-24">
+                                                    <label class="control-label">文化封面：</label>
+                                                    <input id="file-pic" name="file" type="file" value="上传" multiple/>
+                                                    <p class="help-block">
+                                                        支持jpg、jpeg、png、gif,txt,"docx","zip","xlsx"格式，大小没限制</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-method='viewCulture'
+                                                    data-dismiss="modal">查看文化
+                                            </button>
+                                            <button type="button" data-method='save' class="btn btn-primary">保存</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- 新增表单结束-->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+    </div>
+
+    </main>
+    <!--End 页面主要内容-->
+</div>
+</div>
+
+<div th:include="~{admin/common/include :: #jsStyle}"></div>
+<script type="text/javascript" th:src="@{/static/admin/js/jquery.serialize-object.min.js}"></script>
+
+<!--图表插件-->
+<script type="text/javascript">
+
+
+    $(document).ready(function (e) {
+        var cultureId;
+        $("button,a").on('click', function () {
+            //获取到 a标签里面配置 data-method
+            var methodName = $(this).data('method');
+            if (methodName) {
+                doMethod[methodName]();
+            }
+        });
+        var doMethod = {
+            add: function () {
+                $('#cultureAddModal').modal({
+                    show: true,
+                    backdrop: 'static'
+                });
+
+            },
+            search: function () {
+                var cultureName = $("#q_cultureName").val();
+                var queryparam = {
+                    silent: true,
+                    query: {
+                        cultureName: cultureName
+                    }
+                };
+                $('#cultureTable').bootstrapTable('refresh', queryparam);
+
+            },
+            save: function () {
+                //提交表单
+                var bootstrapValidator = $('#cultureAddForm').data('bootstrapValidator');
+                var formParamObj = $("#cultureAddForm").serializeObject();
+                bootstrapValidator.validate();
+                if (bootstrapValidator.isValid()) {
+                    //验证通过
+                    $.ajax({
+                        url: "/culture/add",
+                        async: false,
+                        type: "POST",
+                        data: formParamObj,
+                        success: function (data) {
+                            cultureId = data;
+                            //不上传图片时，不触发bootstrap 上传插件的初始化方法。仅将表单里面的（除图片以外的）内容提交，
+                            if ($("#file-pic").val() != "") {
+                                $('#file-pic').fileinput('upload'); //触发插件开始上传。
+                            }
+                            if (data.isSuccess) {
+                                $('#cultureAddModal').modal('hide');
+                                $('#cultureTable').bootstrapTable('refresh');
+                            } else if ("403" == data) {
+                                alert("你无权访问");
+                                $('#cultureAddModal').modal('hide');
+                            }
+
+                        }
+                    });
+                }
+            },
+            viewCulture: function () {
+                location.href = "/culture/index?id=5"
+            }
+
+        }
+
+        //上传
+        $('#file-pic').fileinput({
+            //初始化上传文件框
+            language: "zh",//配置语言
+            showUpload: false, //显示整体上传的按钮
+            showRemove: true,//显示整体删除的按钮
+            uploadAsync: true,//默认异步上传
+            uploadLabel: "上传",//设置整体上传按钮的汉字
+            removeLabel: "移除",//设置整体删除按钮的汉字
+            uploadClass: "btn btn-primary",//设置上传按钮样式
+            showCaption: true,//是否显示标题
+            dropZoneEnabled: false,//是否显示拖拽区域
+            uploadUrl: '/file/uploadCultureFmFile',//这个是配置上传调取的后台地址，本项目是SSM搭建的
+            maxFileSize: 9999,//文件大小限制
+            maxFileCount: 9999,//允许最大上传数，可以多个，
+            enctype: 'multipart/form-data',
+            allowedFileExtensions: ["jpg", "png", "gif", "docx", "zip", "xlsx", "txt"],/*上传文件格式限制*/
+            msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            showBrowse: true,
+            browseOnZoneClick: true,
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            },
+            uploadExtraData: function (previewId, index) {   //额外参数的关键点
+                //{ id: cultureId }
+                return {id: cultureId};
+            }
+        });
+
+        $('#file-pic').on("fileuploaded", function (event, data, previewId, index) {
+            var response = data.response;
+            console.log(response);
+            if (response.isSuccess) {
+                window.location.href = "/culture/index?id=5";
+
+            } else {
+                $.confirm({
+                    title: '温馨提示',
+                    content: '操作失败',
+                    type: 'red',
+                    buttons: {
+                        omg: {
+                            text: '重试',
+                            btnClass: 'btn-red',
+                        }
+                    }
+                });
+            }
+        });
+
+        //验证规则
+        $('#cultureAddForm').bootstrapValidator({
+            live: 'enabled',//字段值有变化就触发验证 disabled,submitted 当点击提交时验证并展示错误信息
+            message: '信息不合法',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                cultureName: {
+                    message: '文化名不合法',
+                    validators: {
+                        notEmpty: {
+                            message: '文化名称必须填写,不能为空'
+                        }
+                    }
+                },
+                address: {
+                    message: '地址不为空',
+                    validators: {
+                        notEmpty: {
+                            message: '地址不为空'
+                        }
+                    }
+                },
+                desc: {
+                    message: '描述不为空',
+                    validators: {
+                        notEmpty: {
+                            message: '描述不能空'
+                        }
+                    }
+                },
+                info: {
+                    message: '介绍不为空',
+                    validators: {
+                        notEmpty: {
+                            message: '介绍不能为空'
+                        }
+                    }
+                }
+            }
+        });
+    })
+
+
+</script>
+
+
+<style>
+    .my-container {
+        float: left;
+        display: inline-block;
+        margin-right: 30px;
+    }
+
+    .myLabel-content, .myText-content, .myBtn-content {
+        float: left;
+        display: inline-block;
+        line-height: 40px;
+        margin-left: 10px;
+    }
+
+    .myLabel-content, .myText-content input[type='text'], .myBtn-content .btn {
+        height: 38px;
+        font-size: 15px;
+    }
+
+    .myBtn-content .btn {
+        margin-bottom: 10px;
+        margin-right: 20px;
+    }
+</style>
+
+
+</body>
+</html>

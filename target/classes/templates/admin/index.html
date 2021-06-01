@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>后台管理系统</title>
+    <div th:include="~{admin/common/include :: cssStyle }"></div>
+</head>
+
+<body>
+<div class="coder-layout-web">
+    <div class="coder-layout-container">
+        <!--左侧导航-->
+        <div th:include="~{admin/common/include :: #asideStyle }"></div>
+        <!--End 左侧导航-->
+
+        <!--头部信息-->
+        <div th:include="~{admin/common/include :: #headerStyle }"></div>
+        <!--End 头部信息-->
+
+        <!--页面主要内容-->
+        <main class="coder-layout-content" style="width:100%;height:100%; ">
+            <div class="container-fluid" style="color: transparent;">
+                <div class="row">
+                    <div class="card">
+
+                        <div class="card-body" style="height: 830px;
+                        color: transparent;
+                        background-repeat: no-repeat;
+                        background-size:100% 100%;
+
+                        ">
+                            <div class="count-item">
+                                <div class="count-item-circle">
+                                          
+                                </div>
+                                <div class="chart" th:data-percent="${total_culture}">
+                                    <div class="col-md-12 col-xs-12 percent-blocks m-main" data-waypoint-scroll="true">
+                                        <div class="row">
+                                            <div class="col-sm-3 col-xs-6">
+                                                <div class="count-item">
+                                                    <div class="count-item-circle">
+                                        <span>
+                                            <img class="img-avatar img-avatar-48 m-r-10" style='width:50px;height:50px'
+                                                 th:src="@{'/static/admin/images/view.png'}" alt=""/>
+                                        </span>
+                                                    </div>
+                                                    <div class="chart" th:data-percent="${total_view}">
+                                                        <h2 th:text="${total_view}">0</h2>
+                                                        <h5>浏览量 </h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3 col-xs-6">
+                                                <div class="count-item">
+                                                    <div class="count-item-circle">
+                                            <span>
+                                            <img class="img-avatar img-avatar-48 m-r-10" style='width:50px;height:50px'
+                                                 th:src="@{'/static/admin/images/total.png'}" alt=""/>
+                                        </span>
+                                                    </div>
+                                                    <div class="chart" th:data-percent="${total_culture}">
+                                                        <h2 th:text="${total_culture}"></h2>
+                                                        <h5>文化数量</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3 col-xs-6">
+                                                <div class="count-item">
+                                                    <div class="count-item-circle">
+                                          <span>
+                                            <img class="img-avatar img-avatar-48 m-r-10" style='width:50px;height:50px'
+                                                 th:src="@{'/static/admin/images/reg.png'}" alt=""/>
+                                        </span>
+                                                    </div>
+                                                    <div class="chart" th:data-percent="${total_user}">
+                                                        <h2 th:text="${total_user}">0</h2>
+                                                        <h5>注册人数</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3 col-xs-6">
+                                                <div class="count-item">
+                                                    <div class="count-item-circle">
+                                          <span>
+                                            <img class="img-avatar img-avatar-48 m-r-10" style='width:50px;height:50px'
+                                                 th:src="@{'/static/admin/images/sc.png'}" alt=""/>
+                                        </span>
+                                                    </div>
+                                                    <div class="chart" th:data-percent="${total_like}">
+                                                        <h2 th:text="${total_like}">5000</h2>
+                                                        <h5>收藏量</h5>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+
+<div th:include="~{admin/common/include :: #jsStyle }"></div>
+<!--图表插件-->
+<script type="text/javascript">
+    $(document).ready(function (e) {
+
+
+    });
+</script>
+</body>
+</html>

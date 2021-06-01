@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title th:text="${culture.cultureName}"></title>
+
+
+    <link rel="stylesheet" th:href="@{/index/css/diaspora.css}">
+    <link rel="stylesheet" th:href="@{/index/css/default-skin.css}">
+<!--    <link rel='stylesheet' th:href='@{/index/css/frontend.min.css}' type='text/css'>-->
+    <link rel="stylesheet" th:href="@{/static/admin/js/jconfirm/jquery-confirm.min.css}">
+    <link rel="stylesheet" th:href="@{/index/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css}">
+
+    <script th:src="@{/index/js/jquery-1.11.1.min.js}"></script>
+    <script th:src="@{/index/js/diaspora.js}"></script>
+    <script th:src="@{/static/admin/js/jconfirm/jquery-confirm.min.js}"></script>
+
+</head>
+
+<body>
+<!-- 顶部 -->
+<div th:replace="~{index/common/common :: loader}"></div>
+<!-- 导航栏 -->
+<div th:include="~{index/common/common :: topbar}" style="margin-top: 30px;margin-bottom: -30px"></div>
+
+<div id="loader"></div>
+<div id="single">
+    <div id="top" style="display: block;">
+        <div class="bar" style="width: 0;"></div>
+        <a class="icon-home image-icon" href="javascript:;" data-url="/"></a>
+        <!-- <div title="播放/暂停" class="icon-play"></div> -->
+        <h3 class="subtitle" th:text="${culture.cultureName}"></h3>
+        <div class="social">
+            <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--</div>-->
+            <div>
+                <div class="share">
+                    <img th:src="@{/index/images/9.gif}" class="hsx" alt="">
+                    <!-- <a title="获取二维码" class="icon-scan" href="javascript:;"></a> -->
+                </div>
+                <div id="qr"></div>
+            </div>
+        </div>
+        <div class="scrollbar"></div>
+    </div>
+    <div class="section">
+        <div class="article">
+            <div class='main'>
+                <h1 class="title" th:text="${culture.cultureName}"></h1>
+                <div class="stuff">
+                    <span>地址 [[ ${culture.address} ]]</span>
+                    <span>浏览 [[ ${culture.view} ]]</span>
+                    <span>时间 [[ ${#dates.format(culture.createTime, 'yyyy-M-d')} ]]</span>
+                </div>
+                <div class="content markdown">
+
+                    <img th:src="@{'/showFmImg/'+${culture.fmUrl}}" class="cover posttitle"/>
+
+                    <br><br>
+
+                    <p th:utext="${culture.desc}"></p>
+
+                    <p th:utext="${culture.info}"></p>
+
+<!--                    <button class="navbar-btn nav-button wow bounceInRight login"-->
+<!--                            th:onclick="sc([[${culture.id}]])">收藏文创-->
+<!--                    </button>-->
+
+                    <!--
+                    <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="true">
+
+                        <source type="audio/mpeg" src="https://link.hhtjim.com/163/33911781.mp3">
+                    </audio> -->
+
+                </div>
+
+                <div class="comment link" th:onclick="scCulture([[${culture.id}]])">收藏</div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- property area end -->
+<div class="content-area home-area-1 recent-property" style="background-color: #FCFCFC; padding-bottom: 55px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1 col-sm-12 text-center page-title" style="text-align: center">
+                <!-- /.feature title -->
+                <h2>猜你喜欢</h2>
+<!--                <p>系统智能算法推荐,找到最匹配您的爱好 . </p>-->
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- 数据start-->
+            <div class="proerty-th" th:each="culture : ${recommendCultures}" style="text-align: center;margin: 0 auto">
+                <div class="col-sm-6 col-md-3 p0">
+                    <div class="box-two proerty-item">
+                        <div class="item-thumb">
+                            <a href="#"><img th:src="@{'/showFmImg/'+${culture.fmUrl}}" style="height: 150px;width: 222px;margin: 0 auto"/></a>
+                        </div>
+                        <div class="item-entry overflow">
+                            <h5><a href="#"><span th:text="${culture.cultureName}"></span> </a></h5>
+                            <div class="dot-hr"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 数据end-->
+
+        </div>
+
+
+    </div>
+</div>
+
+<div th:replace="~{index/common/common :: footer}"></div>
+<!-- 返回顶部插件 -->
+<!--<div th:replace="~{index/common/common :: cd_top}"></div>-->
+<script>
+    function init() {
+        var loginUserName = '[[${session.loginUserName}]]';
+        if (!loginUserName) {
+            window.location.href = "/login";
+        }
+    }
+
+    init();
+
+    //收藏
+    function scCulture(bid) {
+        //发送ajax请求提交表单
+        $.ajax({
+            url: "/culture/like/" + bid,
+            method: 'post',
+            success: function (result) {
+
+                if (result.isSuccess) {
+                    $.confirm({
+                        title: '温馨提示',
+                        content: '恭喜 收藏成功',
+                        type: 'green',
+                        buttons: {
+                            omg: {
+                                text: '谢谢',
+                                btnClass: 'btn-green'
+                            }
+                        }
+                    });
+                    //$(".link").text("收藏成功");
+                } else {
+                    $.confirm({
+                        title: '温馨提示',
+                        content: result.message,
+                        type: 'red',
+                        typeAnimated: true,
+                        buttons: {
+                            close: {
+                                text: '关闭'
+                            }
+                        }
+                    });
+                }
+            }
+        })
+    }
+
+</script>
+</body>
+
+
+</html>

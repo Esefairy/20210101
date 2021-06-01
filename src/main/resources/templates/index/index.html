@@ -1,0 +1,215 @@
+<!--
+代码如诗 , 如痴如醉 !
+-->
+
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1.0,maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="苍耳">
+    <meta name="keywords" content="文化,旅游">
+    <meta name="description" content="我们像才华横溢的诗歌，无须冥思，就自由生长，句句押韵，在记忆中铭刻剪影，阳光闪烁，边缘耀眼。 - by : 苍耳">
+
+    <title>遇你</title>
+
+    <link rel="icon" th:href="@{/index/images/favicon.ico}">
+
+    <link rel="stylesheet" th:href="@{/index/css/font.css}">
+    <link rel="stylesheet" th:href="@{/index/css/index.css}">
+    <link rel="stylesheet" th:href="@{/index/css/responsive.css}">
+    <link rel="stylesheet" th:href="@{/index/lib/OwlCarousel/assets/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{/index/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css}">
+
+    <script th:src="@{/index/lib/jquery-3.4.1/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{/index/lib/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
+    <script th:src="@{/index/lib/underscore/underscore-min.js}"></script>
+    <script th:src="@{/index/js/jsmodern.js}"></script>
+    <script th:src="@{/index/js/index.js}"></script>
+    <script th:src="@{/index/js/typed.js}"></script>
+    <script th:src="@{/index/lib/OwlCarousel/owl.carousel.min.js}"></script>
+
+    <script type="text/template" id="template_point">
+        <%$.each(model,function(i,item){%>
+        <li class="<%=i==0?'active':''%>" data-target="#slidershow" datta-slide-to="<%=i%> "></li>
+        <%});%>
+    </script>
+    <script type="text/template" id="template_image">
+        <%$.each(model,function(i,item){%>
+        <div class="item <%=i==0?'active':''%> ">
+            <%if(isMobile){%>
+            <a href="" class="m_imageBox">
+                <img src="<%=item.mb%> " alt="">
+            </a>
+            <%}
+            else{%>
+            <a href="" class="pc_imageBox">
+                <img src="<%=item.pc%>" alt="">
+            </a>
+            <%}
+            %>
+        </div>
+        <%});%>
+    </script>
+
+</head>
+
+<body>
+<!-- 顶部 -->
+<div th:replace="~{index/common/common :: loader}"></div>
+<!-- 导航栏 -->
+<div th:include="~{index/common/common :: topbar}"></div>
+
+<!-- 轮播图 -->
+<div class="banner">
+
+    <div id="slidershow" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+
+        </ol>
+        <div class="carousel-inner">
+
+        </div>
+        <a href="#slidershow" class="left carousel-control" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a href="#slidershow" class="right carousel-control" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+
+</div>
+
+<!-- muscic -->
+<div class="music_mp3">
+
+    <!--        <audio id="music" controls="true" autoplay="true" hidden></audio>-->
+    <!--        <div onclick="music_s();">-->
+    <div>
+        <img th:src="@{/index/images/music3.png}" id="music_png" alt="">
+    </div>
+
+</div>
+
+<!-- tashou -->
+<!-- 打字机 -->
+<div class="tashuo" th:each="announcement : ${announcements}">
+    <div class="tashuo_content">
+        <i class="quote-before fa fa-quote-left"></i>
+        <span th:utext="${announcement.announcement}"></span>
+        <i class="quote-after fa fa-quote-right"></i>
+    </div>
+    <div class="tashuo_title typed"></div>
+    <div class="tashou_bottom"></div>
+</div>
+
+
+<div class="sentence-section">
+    <div class="inner-width">
+        <h1>Good words and good sentences</h1>
+        <div class="border"></div>
+        <div class="sliders owl-carousel">
+            <div class="sentence" th:each="sentence : ${sentences}">
+                <div class="sen-info">
+                    <img class="sen-pic" th:src="@{'/showimage/'+${sentence.createImg}}" alt=""/>
+                    <div class="sen-name">
+                        <span th:text="${sentence.createName}"></span>
+                        [[ ${#dates.format(sentence.createTime, 'yyyy-M-d')} ]]
+                    </div>
+                </div>
+                <p th:utext="${sentence.content}">
+
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- 第三人称 -->
+<div class="ta">
+    <div class="you_title">
+        <span class="en">热门</span> <span class="cn">&nbsp;&nbsp;/&nbsp;&nbsp;文化</span><br>
+        <img src="./index/images/1.gif">
+    </div>
+
+
+    <div class="ta_article">
+        <div class="primary">
+            <div class="post" th:each="culture : ${cultures}">
+                <a th:href="@{'/culture/detail?id='+${culture.id}}" class="posttitle">
+                    <img th:src="@{'/showFmImg/'+${culture.fmUrl}}" class="cover posttitle"/>
+                </a>
+                <div class="else">
+                    <p>[[ ${#dates.format(culture.createTime, 'yyyy-M-d')} ]]</p>
+                    <h3><a th:href="@{'/culture/detail?id='+${culture.id}}" th:text="${culture.cultureName}"
+                           class="posttitle"></a>
+                    </h3>
+                    <p th:utext="${culture.desc}"></p>
+                    <p class="here">
+                        <span class="icon-letter"><img th:src="@{/index/images/ll.png}"> [[ ${culture
+                            .view} ]]</span>
+                        <span class="icon-view"><img th:src="@{/index/images/sc.png}"> 99</span>
+<!--                        <span class="icon-view"><img th:src="@{/index/images/sc.png}"> [[ ${culture.creatorId} ]]</span>-->
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div th:replace="~{index/common/common :: footer}"></div>
+
+
+<script>
+    $('.owl-carousel').owlCarousel({
+        margin: 10,
+        responsiveClass: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            680: {
+                items: 2
+            },
+            960: {
+                items: 3
+            }
+        }
+    })
+</script>
+
+
+
+<!-- 离开网页时title -->
+<script>
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            $('[rel="shortcut icon"]').attr("href", "./images/faviconlea.ico");
+            document.title = "(●—●)喔哟，崩溃啦！";
+            clearTimeout(titleTime)
+        } else {
+            $('[rel="shortcut icon"]').attr("href", "./images/favicon.ico");
+            document.title = "(/≧▽≦/)咦！又好了！ " + OriginTitile;
+            titleTime = setTimeout(function () {
+                document.title = OriginTitile
+            }, 2000)
+        }
+    });
+</script>
+
+<!-- 返回顶部插件 -->
+<div th:replace="~{index/common/common :: cd_top}"></div>
+
+
+</body>
+
+</html>
